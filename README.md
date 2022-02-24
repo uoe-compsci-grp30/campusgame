@@ -1,8 +1,6 @@
-
 # Campusgame (Needs a better name)
 
-Part of the submission for group 30.
-The software side is split into multiple parts:
+Part of the submission for group 30. The software side is split into multiple parts:
 
 - The Django backend (this)
 - The React frontend ([here](https://github.com/uoe-compsci-grp30/campusgame-react))
@@ -11,13 +9,15 @@ The software side is split into multiple parts:
 
 For this project, a few important libraries should be installed.
 
-1. GDAL (Geospatial Data Abstraction Library): This library is for the processing of geographical data.
-This is important for processing user locations at a scale. Based in C, and wrapped by Python, this library makes the processing
-fast, which is important when there are many users
+1. GDAL (Geospatial Data Abstraction Library): This library is for the processing of geographical data. This is
+   important for processing user locations at a scale. Based in C, and wrapped by Python, this library makes the
+   processing fast, which is important when there are many users
 
-    GDAL: https://gdal.org/
+   GDAL: https://gdal.org/
 
-    GDAL github: https://github.com/OSGeo/gdal
+   GDAL github: https://github.com/OSGeo/gdal
+
+   GDAL brew: https://formulae.brew.sh/formula/gdal
 
 
 2. Postgres & Postgis: These two libraries are for the storage of geographical data.
@@ -25,8 +25,34 @@ fast, which is important when there are many users
    Postgis is a fairly standard library, and is supported by Django.
 
    PostgreSQL: https://www.postgresql.org/
-   
+
    PostgreSQL Django: https://docs.djangoproject.com/en/4.0/ref/databases/#postgresql-notes
 
    PostGIS Django: https://docs.djangoproject.com/en/4.0/ref/contrib/gis/install/postgis/
    
+
+## Setting up the database
+
+__NOTE: Make sure GDAL, GEOS, PROJ, and PostGis are installed (Link to how [here](https://docs.djangoproject.com/en/4.0/ref/contrib/gis/install/geolibs/#geosbuild))__
+
+Make sure you have PostgreSQL installed to your machine, and have it running.
+For the time being, make sure it creates a user in the database that is admin, and is accessible from your 
+user on your computer.
+
+From your terminal/command line, create a database using:
+
+`$ createdb campusgame`
+
+This will create a database in Postgres (short for PostgreSQL).
+To access this database into an SQL prompt simply type:
+
+`$psql campusgame`
+
+Which will open up an SQL shell. 
+In this shell we can do all sorts, but for now we want to create an extension in the database, for PostGIS.
+Type the command:
+
+`CREATE EXTENSION postgis;`
+
+And hopefully it will work.
+This means that your Postgres database has all the tools it needs to perform geographical queries.
