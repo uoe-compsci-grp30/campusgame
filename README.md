@@ -65,3 +65,24 @@ Type the command:
 
 And hopefully it will work.
 This means that your Postgres database has all the tools it needs to perform geographical queries.
+
+## Connecting to the database
+
+Our Django config uses a database url system in order to connect to the database.
+This is simply so that we can: 
+ - Separate the database configuration from the settings file
+ - Hide secrets, such as database credentials behind a .env file
+ - Allow collaborators to connect to their own database without changing the code
+
+If you don't already have one, create a `.env` file using:
+
+`vim .env`
+
+While editing, set the variable:
+
+`DJANGO_DATABASE_URL=postgres://<USERNAME>:<PASSWORD>@<DATABASE_URL>>/<DATABASE_NAME>>`
+
+Substituting the following:
+ - USERNAME & PASSWORD: The username, and password for your database
+ - DATABASE_URL: The url to your database, optionally with the port, this is usually `localhost`
+ - DATABASE_NAME: The name of the database, if you followed these instructions, this will be `campusgame`
