@@ -80,7 +80,7 @@ If you don't already have one, create a `.env` file using:
 
 While editing, set the variable:
 
-`DATABASE_URL=postgres://<USERNAME>:<PASSWORD>@<DATABASE_URL>>/<DATABASE_NAME>>`
+`DATABASE_URL=postgres://<USERNAME>:<PASSWORD>@<DATABASE_URL>/<DATABASE_NAME>`
 
 Substituting the following:
  - USERNAME & PASSWORD: The username, and password for your database
