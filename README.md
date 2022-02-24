@@ -19,12 +19,21 @@ For this project, a few important libraries should be installed.
 
    GDAL brew: https://formulae.brew.sh/formula/gdal
 
+2. GEOS (Geometry Engine – Open Source): This provides the geometry implementation for GeoDjango. This can be installed from source, but if you have homebrew installed, it is much easier
 
-2. Postgres & Postgis: These two libraries are for the storage of geographical data.
+   GEOS docs: https://libgeos.org/usage/install/
+
+3. PROJ: This library provides a way to map coordinates between projections, which is unlikely to be used in our app, but is still a dependency of Postgis
+
+   PROJ docs: https://proj.org/
+
+5. Postgres & Postgis: These two libraries are for the storage of geographical data.
 
    Postgis is a fairly standard library, and is supported by Django.
 
    PostgreSQL: https://www.postgresql.org/
+   
+   PostGIS: https://postgis.net/install/
 
    PostgreSQL Django: https://docs.djangoproject.com/en/4.0/ref/databases/#postgresql-notes
 
