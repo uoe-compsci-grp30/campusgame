@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'campusgame.wsgi.application'
 
 
 DATABASES = {
+    # Set DATABASE_URL=... in the environment variables
     'default': dj_database_url.config(default="postgres://mason@localhost/campusgame")
 }
 
@@ -97,7 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-uk'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
