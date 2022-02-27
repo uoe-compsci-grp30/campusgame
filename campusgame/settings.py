@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'users',
+    'games',
 ]
 
 MIDDLEWARE = [
@@ -71,10 +74,11 @@ WSGI_APPLICATION = 'campusgame.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+AUTH_USER_MODEL = "users.User"
 
 DATABASES = {
     # Set DATABASE_URL=... in the environment variables
-    'default': dj_database_url.config(default="postgres://mason@localhost/campusgame")
+    'default': dj_database_url.config(default="postgis://mason@localhost/campusgame")
 }
 
 # Password validation
