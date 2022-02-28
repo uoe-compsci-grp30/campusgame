@@ -87,7 +87,7 @@ Substituting the following:
  - DATABASE_NAME: The name of the database, if you followed these instructions, this will be `campusgame`
 
 
-## Celery, and the likes
+## Celery
 
 Celery is a Python library that allows for the running of scheduled tasks.
 This can be used to send out scheduled emails, and run background tasks.
@@ -98,3 +98,6 @@ For our system we will use `Redis` as a broker, as this is the most widely used.
 Redis is a memory based key-value pair database, and in this case it stores the items in queue to be run by Celery.
 
 For setup with Django see [here](https://docs.celeryproject.org/en/stable/django/first-steps-with-django.html).
+
+## Channels
+

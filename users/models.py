@@ -1,8 +1,11 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
 class User(AbstractUser):
+    uid = models.UUIDField(default=uuid.uuid4)
     profile_picture = models.ImageField(default="")
 
 
@@ -13,4 +16,6 @@ class GameParticipation(models.Model):
     current_zone = models.ForeignKey("games.Zone", on_delete=models.DO_NOTHING)
 
     score = models.IntegerField(default=0)
-    is_win = models.BooleanField(default=False)
+
+    is_alive = models.BooleanField(default=False)  # Is the player alive
+    is_eliminated = models.BooleanField(default=False)  # Is the player eliminated
