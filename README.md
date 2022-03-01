@@ -101,3 +101,8 @@ For setup with Django see [here](https://docs.celeryproject.org/en/stable/django
 
 ## Channels
 
+
+
+## Notes:
+
+- If you have generated your database before moving to commit 
