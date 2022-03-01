@@ -4,6 +4,8 @@ from enum import Enum
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+from games.models import Game
+
 
 class MessageType(Enum):
     player_location_update = 0  # A player has entered, or exited, a location
@@ -42,7 +44,8 @@ class Message:
 
 
 class GameConsumer(AsyncWebsocketConsumer):
-    room_name = ""
+    game_id = ""
+    game = None
     room_group_name = ""
 
     def __init__(self):
@@ -52,8 +55,9 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Connect to the game 'room'
 
-        self.room_name = self.scope['url_route']['kwargs']['game_id']
-        self.room_group_name = f"game_{self.room_name}"
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.game = Game.objects.get(id=self.game_id)
+        self.room_group_name = f"game_{self.game_id}"
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -61,7 +65,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
 
         print(self.scope)
-
 
         await self.accept()
 
@@ -88,7 +91,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
 
     async def players_status_update(self):
-
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -96,10 +98,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "message_d": Message(
                     type=MessageType.chat_message,
                     sender="",
-                    payload={
-                        "alive": [],
-                        "eliminated": []
-                    }
+                    payload=self.game.get_player_statuses()
                 ).serialize()
             }
         )
