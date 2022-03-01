@@ -87,7 +87,9 @@ Substituting the following:
  - DATABASE_NAME: The name of the database, if you followed these instructions, this will be `campusgame`
 
 
-## Celery
+## Notes:
+
+### Celery:
 
 Celery is a Python library that allows for the running of scheduled tasks.
 This can be used to send out scheduled emails, and run background tasks.
@@ -99,10 +101,25 @@ Redis is a memory based key-value pair database, and in this case it stores the 
 
 For setup with Django see [here](https://docs.celeryproject.org/en/stable/django/first-steps-with-django.html).
 
-## Channels
+### Channels:
 
 
 
-## Notes:
 
-- If you have generated your database before moving to commit 
+### Known issues:
+
+- If you have generated your database before moving to commit `204b0a54` (Before 01/03/2022 at 00:08), then you will 
+likely hit a problem with your user ids on models that point towards the user.
+
+   This issue is due to the fact that these models still have an integer field in their table that points towards the 
+   primary key of the user, which is no longer an integer.
+   Luckily, there is a remedy to this.
+
+   If you connect to your database using `psql campusgame`, and execute the following:
+   
+   ```postgresql
+   CREATE EXTENSION "uuid-ossp";
+   
+   ALTER TABLE users_user_groups ALTER COLUMN user_id SET DATA TYPE UUID USING (uuid_generate_v4());
+   ALTER TABLE users_user_user_permissions ALTER COLUMN user_id SET DATA TYPE UUID USING (uuid_generate_v4());
+   ```
