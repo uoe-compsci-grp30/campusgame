@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync
 from celery import shared_task
 from channels.layers import get_channel_layer
 
-from games.consumers import MessageType
+from games.support_classes import MessageType
 
 
 @shared_task

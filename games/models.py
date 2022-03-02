@@ -1,7 +1,11 @@
 import uuid
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.db import models
 from django.contrib.gis.db.models import GeometryField
+
+from games.support_classes import MessageType
 
 
 class Game(models.Model):
@@ -14,16 +18,23 @@ class Game(models.Model):
 
     max_participants = models.IntegerField(default=20)
     target_score = models.IntegerField(default=100)
+    current_round_idx = models.IntegerField(default=0)
 
     @property
     def current_round(self):
-        # TODO: Make this implementation pick the current round by time
-        return self.round_set.last()
+        if self.round_set.count() > 0:
+            return self.round_set.all()[self.current_round_idx]
+        return None
 
     @property
     def next_round(self):
-        # TODO: Make this implementation pick the current round by time -> round next in line
-        return self.round_set.last()
+        if self.current_round_idx < self.round_set.count():
+            return self.round_set.all()[self.current_round_idx + 1]
+        return None
+
+    @property
+    def room_group_name(self):
+        return f"game_{self.pk}"
 
     def start_game(self):
         """
@@ -47,6 +58,31 @@ class Game(models.Model):
         Checking of location is done server-side, this would be the quickest way because of the extensive geo-indexing
         that PostGIS provides.
         """
+
+        # Create schedules for all the default events
+
+        # Broadcast game start
+        channel_layer = get_channel_layer()
+
+        async_to_sync(channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": MessageType.chat_message.name,
+                "message_d": {
+                    "type": MessageType.game_update.name,
+                    "payload": {
+                        "round_number": self.current_round_idx,
+                        "started": True,
+                        "ended": False
+                    },
+                    "uid": ""
+                }
+            }
+        )
+
+        pass
+
+    def move_to_next_round(self):
         pass
 
     def get_player_statuses(self):

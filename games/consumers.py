@@ -1,46 +1,10 @@
 import json
-from dataclasses import dataclass
-from enum import Enum
 
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from games.models import Game
-
-
-class MessageType(Enum):
-    player_location_update = 0  # A player has entered, or exited, a location
-    players_status_update = 1  # Player's statuses have changed, i.e. ALIVE, or ELIMINATED
-    chat_message = 2  # A message in chat (could be something saying player A has joined the game)
-    game_update = 3  # A change to the game, say a round is started, and at what time (so user clocks can sync)
-
-
-@dataclass
-class Message:
-    type: MessageType  # The type of message being sent
-    sender: str  # UID of the sender, use "" for messages from the server
-
-    payload: any  # JSON body that is sent
-
-    def serialize(self):
-        d = self.__dict__
-        d["type"] = self.type.name
-
-        return d
-
-    @staticmethod
-    def decode(obj: dict):
-        if "uid" in obj:
-            obj["sender"] = obj["uid"]
-        return Message.deserialize(obj)
-
-    @staticmethod
-    def deserialize(obj: dict):
-        m = Message(
-            type=MessageType[obj["type"]],
-            sender=obj["sender"],
-            payload=obj["payload"]
-        )
-        return m
+from games.support_classes import MessageType, Message
 
 
 class GameConsumer(AsyncWebsocketConsumer):
@@ -54,18 +18,14 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         # Connect to the game 'room'
-
         self.game_id = self.scope['url_route']['kwargs']['game_id']
-        self.game = Game.objects.get(id=self.game_id)
-        self.room_group_name = f"game_{self.game_id}"
+        self.game = await database_sync_to_async(lambda x: Game.objects.get(id=x))(self.game_id)
+        self.room_group_name = self.game.room_group_name
 
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
-
-        print(self.scope)
-
         await self.accept()
 
     async def disconnect(self, code):
@@ -120,4 +80,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         :param event:
         """
-        pass
+        message_d = event['message_d']
+
+        message = Message.decode(message_d)
+        # Do various things, such as check for naughty words
+
+        # Broadcast message to WebSocket
+        await self.send(text_data=json.dumps(message.serialize()))
