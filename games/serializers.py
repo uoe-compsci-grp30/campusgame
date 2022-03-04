@@ -8,7 +8,7 @@ class ZoneSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Zone
         geo_field = "geometry"
-        fields = '__all__'
+        fields = ['capacity', 'pk']
 
 
 class RoundSimulator(serializers.ModelSerializer):
