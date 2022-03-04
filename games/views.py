@@ -10,4 +10,3 @@ from games.serializers import GameSerializer
 class GameViewSet(ModelViewSet):
     serializer_class = GameSerializer
     queryset = Game.objects.all()
-
