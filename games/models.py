@@ -3,7 +3,7 @@ import uuid
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import models
-from django.contrib.gis.db.models import GeometryField
+from django.contrib.gis.db.models import GeometryField, Union, Collect
 
 from games.support_classes import MessageType
 

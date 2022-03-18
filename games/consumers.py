@@ -3,7 +3,7 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from games.models import Game
+from games.models import Game, Zone
 from games.support_classes import MessageType, Message
 
 
@@ -87,3 +87,21 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         # Broadcast message to WebSocket
         await self.send(text_data=json.dumps(message.serialize()))
+
+    async def player_location_update(self, event):
+        """
+
+        :param event:
+        :return:
+        """
+        message = Message.decode(event["message_d"])
+        zones = await database_sync_to_async(lambda: self.game.round_set.first())()
+        zone = await database_sync_to_async(lambda: zones.active_zones.first())()  # type: Zone
+
+        out_message = Message(type=MessageType.zone_fullness_update,
+                              sender="",
+                              payload={
+                                  "zone_pk": zone.pk,
+                                  "fullness": 10
+                              })
+        await self.send(text_data=json.dumps(out_message.serialize()))

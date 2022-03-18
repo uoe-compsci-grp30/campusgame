@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import dj_database_url
 
@@ -42,14 +42,13 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_gis',
-
+    'rest_framework_simplejwt',
     'users',
     'games',
 
     'django_celery_beat',
     'django_extensions'
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -148,12 +147,16 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
-# GRAPH_MODELS = {
-#   'all_applications': True,
-#   'group_models': True,
-# }
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
+}
 
 GRAPH_MODELS = {
-  'app_labels': ["games", "users"],
+    'app_labels': ["games", "users"],
 }

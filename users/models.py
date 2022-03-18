@@ -5,7 +5,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    uid = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     profile_picture = models.ImageField(default="")
 
 

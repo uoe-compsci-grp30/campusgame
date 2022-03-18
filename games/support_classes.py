@@ -7,6 +7,7 @@ class MessageType(Enum):
     players_status_update = 1  # Player's statuses have changed, i.e. ALIVE, or ELIMINATED
     chat_message = 2  # A message in chat (could be something saying player A has joined the game)
     game_update = 3  # A change to the game, say a round is started, and at what time (so user clocks can sync)
+    zone_fullness_update = 4  # Send along with player_location_updates to update a zones current fullness
 
 
 @dataclass
