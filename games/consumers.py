@@ -1,6 +1,5 @@
 import json
 
-from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
@@ -114,7 +113,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             lambda: self.game.round_set.get(id=pld.get("round_id")))()  # type: Round
         zone = await database_sync_to_async(lambda: t_round.active_zones.get(id=pld.get("zone_id")))()  # type: Zone
 
-        # Get the index of the zone in the fullness
+        # Get the index of the zone in the fullness array
         idx = await database_sync_to_async(lambda: t_round.get_fullness_idx_for_zone_id(pld.get("zone_id")))()
 
         f = t_round.zone_fullness
@@ -127,6 +126,8 @@ class GameConsumer(AsyncWebsocketConsumer):
             f[idx] -= 1
 
         t_round.zone_fullness = f
+
+        # Save round details
         await database_sync_to_async(lambda: t_round.save())()
 
         out_message = Message(type=MessageType.zone_fullness_update,
