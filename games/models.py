@@ -2,8 +2,11 @@ import uuid
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.core.validators import int_list_validator
 from django.db import models
 from django.contrib.gis.db.models import GeometryField, Union, Collect
+from django.utils import cache
+from django.core.cache import cache
 
 from games.support_classes import MessageType
 
@@ -104,6 +107,19 @@ class Round(models.Model):
 
     game = models.ForeignKey("Game", on_delete=models.CASCADE)
     active_zones = models.ManyToManyField("games.Zone")
+    _zone_fullness = models.CharField(validators=[int_list_validator], max_length=200)
+
+    def get_fullness_idx_for_zone_id(self, z_id):
+        idcs = self.active_zones.all().order_by("id").values_list("id", flat=True)
+        return list(idcs).index(z_id)
+
+    @property
+    def zone_fullness(self):
+        return [int(x) for x in self._zone_fullness.split(",")]
+
+    @zone_fullness.setter
+    def zone_fullness(self, v: [int]):
+        self._zone_fullness = ','.join([str(x) for x in v])
 
 
 class Zone(models.Model):

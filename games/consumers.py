@@ -1,9 +1,10 @@
 import json
 
+from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from games.models import Game, Zone
+from games.models import Game, Zone, Round
 from games.support_classes import MessageType, Message
 
 
@@ -91,17 +92,47 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def player_location_update(self, event):
         """
 
+        Example message:
+        {
+            "type": "player_location_update",
+            "payload":
+            {
+                "entering": "true",
+                "round_id": 1,
+                "zone_id": 7
+            },
+            "uid": "WSK1"
+        }
+
         :param event:
         :return:
         """
         message = Message.decode(event["message_d"])
-        zones = await database_sync_to_async(lambda: self.game.round_set.first())()
-        zone = await database_sync_to_async(lambda: zones.active_zones.first())()  # type: Zone
+        pld = message.payload
+
+        t_round = await database_sync_to_async(
+            lambda: self.game.round_set.get(id=pld.get("round_id")))()  # type: Round
+        zone = await database_sync_to_async(lambda: t_round.active_zones.get(id=pld.get("zone_id")))()  # type: Zone
+
+        # Get the index of the zone in the fullness
+        idx = await database_sync_to_async(lambda: t_round.get_fullness_idx_for_zone_id(pld.get("zone_id")))()
+
+        f = t_round.zone_fullness
+        status = pld.get("status", -1)  # 0: No-op, 1: Entering, 2: Exiting
+        if status == 1:
+            # If we're entering a zone, increase its fullness
+            f[idx] += 1
+        elif status == 2:
+            # If we're exiting a zone, decrease its fullness
+            f[idx] -= 1
+
+        t_round.zone_fullness = f
+        await database_sync_to_async(lambda: t_round.save())()
 
         out_message = Message(type=MessageType.zone_fullness_update,
                               sender="",
                               payload={
                                   "zone_pk": zone.pk,
-                                  "fullness": 10
+                                  "fullness": t_round.zone_fullness[idx]
                               })
         await self.send(text_data=json.dumps(out_message.serialize()))

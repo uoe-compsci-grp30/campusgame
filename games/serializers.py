@@ -6,14 +6,24 @@ from games.models import Game, Zone, Round
 
 
 class ZoneSerializer(GeoFeatureModelSerializer):
+    fullness = serializers.SerializerMethodField()
+
+    def get_fullness(self, instance: Zone):
+        r = instance.round_set.get(pk=self.context["round_id"])  # type: Round
+        idx = r.get_fullness_idx_for_zone_id(instance.id)
+        return r.zone_fullness[idx]
+
     class Meta:
         model = Zone
         geo_field = "geometry"
-        fields = ['capacity', 'pk']
+        fields = ['fullness', 'capacity', 'pk']
 
 
-class RoundSimulator(serializers.ModelSerializer):
-    active_zones = ZoneSerializer(many=True)
+class RoundSerializer(serializers.ModelSerializer):
+    active_zones = serializers.SerializerMethodField()
+
+    def get_active_zones(self, instance: Round):
+        return ZoneSerializer(many=True, context={"round_id": instance.id}).to_representation(instance.active_zones)
 
     class Meta:
         model = Round
@@ -25,7 +35,7 @@ class GameSerializer(serializers.ModelSerializer):
     ws_url = serializers.SerializerMethodField()
 
     def get_rounds(self, instance: Game):
-        return RoundSimulator(instance.round_set.all(), many=True).data
+        return RoundSerializer(instance.round_set.all(), many=True).data
 
     def get_ws_url(self, instance: Game):
         req = self.context.get('request')
