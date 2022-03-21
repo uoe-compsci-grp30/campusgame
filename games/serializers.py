@@ -44,7 +44,7 @@ class GameSerializer(serializers.ModelSerializer):
 
         meta = req.META
 
-        secure = req.scheme == "https"
+        secure = req.scheme != "http"
         url = f"{'wss' if secure else 'ws'}://{meta['HTTP_HOST']}/ws/game/{instance.id}/"
         return url
 
