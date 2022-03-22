@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.gis.db.models import Collect
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer, GeometryField
@@ -44,7 +45,7 @@ class GameSerializer(serializers.ModelSerializer):
 
         meta = req.META
 
-        secure = req.scheme == "https"
+        secure = not settings.DEBUG
         url = f"{'wss' if secure else 'ws'}://{meta['HTTP_HOST']}/ws/game/{instance.id}/"
         return url
 

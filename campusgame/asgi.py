@@ -18,10 +18,11 @@ import django
 from channels.http import AsgiHandler
 from channels.routing import ProtocolTypeRouter, URLRouter
 
-import games.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'campusgame.settings')
 django.setup()
+
+import games.routing
 
 router = URLRouter(games.routing.websocket_urlpatterns)
 
