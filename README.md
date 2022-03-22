@@ -72,7 +72,7 @@ Our Django config uses a database url system in order to connect to the database
 - Hide secrets, such as database credentials behind a .env file
 - Allow collaborators to connect to their own database without changing the code
 
-If you don't already have one, create a `.env` file using:
+If you don't already have one, create a `.env` file in the campusgame directory using:
 
 `vim .env`
 
