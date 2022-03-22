@@ -62,7 +62,6 @@ Type the command:
 
 `CREATE EXTENSION postgis;`
 
-And hopefully it will work.
 This means that your Postgres database has all the tools it needs to perform geographical queries.
 
 ## Connecting to the database
@@ -73,7 +72,7 @@ This is simply so that we can:
  - Hide secrets, such as database credentials behind a .env file
  - Allow collaborators to connect to their own database without changing the code
 
-If you don't already have one, create a `.env` file using:
+If you don't already have one, create a `.env` file in the campusgame directory using:
 
 `vim .env`
 
@@ -85,6 +84,7 @@ Substituting the following:
  - USERNAME & PASSWORD: The username, and password for your database
  - DATABASE_URL: The url to your database, optionally with the port, this is usually `localhost`
  - DATABASE_NAME: The name of the database, if you followed these instructions, this will be `campusgame`
+ This will allow you to host the server locally on your machine.
 
 
 ## Notes:
@@ -119,6 +119,7 @@ likely hit a problem with your user ids on models that point towards the user.
    
    ```postgresql
    CREATE EXTENSION "uuid-ossp";
+   
    
    ALTER TABLE users_user_groups ALTER COLUMN user_id SET DATA TYPE UUID USING (uuid_generate_v4());
    ALTER TABLE users_user_user_permissions ALTER COLUMN user_id SET DATA TYPE UUID USING (uuid_generate_v4());
