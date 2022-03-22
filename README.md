@@ -121,3 +121,5 @@ For setup with Django see [here](https://docs.celeryproject.org/en/stable/django
     ALTER TABLE django_admin_log ALTER COLUMN user_id SET DATA TYPE UUID USING (uuid_generate_v4());
 
    ```
+
+- There is a dependency issue when installing the requirements.txt file. This occurs because django-celery-beat 2.2.1 is incompatible with higher than django 4.0. This can be remedied by removing django from the requirements.txt file (line 23). Uninstaling django using the command 'pip uninstall django'. Running the command 'pip3 install -r requirements.txt'. Then reinstalling django using the command 'pip install django'.

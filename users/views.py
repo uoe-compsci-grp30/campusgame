@@ -7,6 +7,9 @@ from users.serializers import UserSerializer
 
 
 class UserDetailsView(RetrieveAPIView):
+    """ 
+    Class provides the functionality necessary to authenticate if a user exists.
+    """
     serializer_class = UserSerializer
     lookup_url_kwarg = "uid"
     permission_classes = [IsAuthenticated]
@@ -15,6 +18,9 @@ class UserDetailsView(RetrieveAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_detail_from_jwt(req):
+    """ 
+    Checks if a user exists. If this is not the case return a HTTP response code 401, otherwise return the serialized user data.
+    """
     if req.user is None:
         return Response("User not found", status=401)
 

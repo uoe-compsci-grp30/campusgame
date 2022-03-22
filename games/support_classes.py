@@ -28,12 +28,14 @@ class Message:
 
     @staticmethod
     def decode(obj: dict):
+        """ Returns the deserialized information of the Message object passed as a parameter. Identifies the sender of the message and uses the function deserialize to provide the deserialized Message object """
         if "uid" in obj:
             obj["sender"] = obj["uid"]
         return Message.deserialize(obj)
 
     @staticmethod
     def deserialize(obj: dict):
+        """ Deserializes a Message object. """
         m = Message(
             type=MessageType[obj["type"]],
             sender=obj["sender"],
