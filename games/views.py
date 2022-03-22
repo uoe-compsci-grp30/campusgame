@@ -30,6 +30,7 @@ def geolocation_zone_intersection_check(request, *args, **kwargs):
 
         if zones.count() > 0:
             return JsonResponse({
+                "found": True,
                 "zone_id": zones.first().id  # Just return the first hit
             }, status=200)
-        return JsonResponse({}, status=404)  # Location/zone ID was technically not found
+        return JsonResponse({"found": False}, status=200)  # Location/zone ID was technically not found
