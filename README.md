@@ -1,4 +1,4 @@
-# Campusgame (Needs a better name)
+# ZONES
 
 Part of the submission for group 30. The software side is split into multiple parts:
 
