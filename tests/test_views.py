@@ -1,22 +1,13 @@
-from django.test import TestCase
-from django.http import HttpRequest, response
-from django.urls import reverse
-from django.db import models
-import uuid
+from django.test import TestCase, Client
+from users.models import User
 
-from.models import User
+class TestViews(TestCase):
 
-class HomepageTests(TestCase):
-    """
-    Class responsible for testing the homepage
-    """
+    def setUp(self):
+        self.client = Client()
 
-    # def setUp(self):
-       
-
-    # tests for whether the webpage is up and running and whether upon making a get request to the login or admin page are done within other tests and do not need to be explicity done.
-    
     def test_succesful_admin_login(self):
+        """Function tests if a superuser can successfully login"""
         temp_admin = User(username='user')
         temp_admin.set_password('password')
         temp_admin.is_staff = True
@@ -36,6 +27,7 @@ class HomepageTests(TestCase):
         self.assertEquals(response_logged_in.url, '/admin/')
 
     def test_unauthorized_user_login(self):
+        """ function verifies a non-superuser cannot access the database. """
         temp_user = User.objects.create_user(username='temp_user')
         temp_user.set_password('passwordtemp')
         temp_user.save() #saves the user in the database
@@ -55,6 +47,7 @@ class HomepageTests(TestCase):
  #essentially want to test that you canrt acces other ages simply by typing them in
 
     def test_login_bypass(self):
+        """ Function tests that unauthorized users cannot bypass login by directly typing url. """
         response_authorization_page = self.client.get('/admin/auth')
         self.assertEquals(response_authorization_page.status_code, 302)
         self.assertEquals(response_authorization_page.url, "/admin/login/?next=/admin/auth")
@@ -103,9 +96,17 @@ class HomepageTests(TestCase):
         self.assertEquals(response_game_participation_page.status_code, 302)
         self.assertEquals(response_game_participation_page.url, "/admin/login/?next=/admin/gameparticipation/")
 
-        response_users_page = self.client.get('/admin/users/user/')
+        response_users_page = self.client.get('/admin/users')
         self.assertEquals(response_users_page.status_code, 302)
-        self.assertEquals(response_users_page.url, "/admin/login/?next=/admin/users/user/")
+        self.assertEquals(response_users_page.url, "/admin/login/?next=/admin/users")
+        
+        response_users_user_page = self.client.get('/admin/users/user/')
+        self.assertEquals(response_users_user_page.status_code, 302)
+        self.assertEquals(response_users_user_page.url, "/admin/login/?next=/admin/users/user/")
+        
+        response_password_change_page = self.client.get('/admin/password_change/')
+        self.assertEquals(response_password_change_page.status_code, 302)
+        self.assertEquals(response_password_change_page.url, "/admin/login/?next=/admin/password_change/")
         
         response_password_change_page = self.client.get('/admin/password_change/')
         self.assertEquals(response_password_change_page.status_code, 302)

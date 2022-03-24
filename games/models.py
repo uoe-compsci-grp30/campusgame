@@ -57,8 +57,7 @@ class Game(models.Model):
 
         When the timer goes off, then the worker will check all player's participation instance to see which
         users are in a zone.
-        Users that are not in a zone will be marked as not alive, and will have to win a minigame to get back in.
-        If they fail the minigame, then they are out of the game, and marked as eliminated.
+        Users that are not in a zone will be marked as eliminated.
 
         Before the end of each round, a warning will be sent to the players that they have x amount of time left.
         And 5 seconds before the end of each round, a message will be sent to the devices to remind them to check their
