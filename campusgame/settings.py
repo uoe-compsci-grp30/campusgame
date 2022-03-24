@@ -144,6 +144,11 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Media files
+
+# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+# GS_BUCKET_NAME = 'YOUR_BUCKET_NAME_GOES_HERE'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 

@@ -19,7 +19,7 @@ class UserDetailsView(RetrieveAPIView):
 @permission_classes([IsAuthenticated])
 def user_detail_from_jwt(req):
     """ 
-    Checks if a user exists. If this is not the case return a HTTP response code 401, otherwise return the serialized user data.
+    Checks if a user is authenticated, using their JWT, and returns 401 if they're not, otherwise return the serialized user data.
     """
     if req.user is None:
         return Response("User not found", status=401)

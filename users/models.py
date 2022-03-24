@@ -8,6 +8,7 @@ The user model that represents a user participating in the game.
 Implemented using the built-in Django user model: AbstractUser.
 """
 
+
 class User(AbstractUser):
     """ The User class that represents a user that has created an account.
     Implemented using the built-in Django user model 'AbstractUser'.
@@ -15,7 +16,7 @@ class User(AbstractUser):
     It also contains a profile picture that is uploaded by the user.
     """
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)  # id uniquely identifies a user
-    profile_picture = models.ImageField(default="", null=True)
+    is_gamekeeper = models.BooleanField(default=False)  # is the user a gamekeeper?
 
 
 class GameParticipation(models.Model):
